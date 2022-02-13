@@ -18,10 +18,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.update)
 
-        self.entities = []
+        self.entities = {}
 
-    def add_entity(self, entity):
-        self.entities.append(entity)
+    def add_entity(self, entity, name):
+        self.entities[name] = entity
 
     def initializeGL(self):
         # Clear color
@@ -33,7 +33,7 @@ class OpenGLWidget(QOpenGLWidget):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
         for entity in self.entities:
-            entity.draw()
+            self.entities[entity].draw()
 
 
 class ShaderProgram:
