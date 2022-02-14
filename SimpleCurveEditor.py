@@ -29,8 +29,8 @@ class CurveEditor(OpenGLWidget):
         super().__init__(*args, **kwargs)
 
         self.line_data = Line(color=(1.0, 0.3, 0.3))
-        self.line_data.add_point((0.0, 0.0))
-        self.line_data.add_point((0.5, 0.5))
+        self.line_data.add_point((-1.0, -1.0))
+        self.line_data.add_point((0.0, 0.5))
         self.line_data.add_point((1.0, 1.0))
 
         self.line_data_0 = Line(color=(0.5, 0.5, 0.5))
@@ -99,6 +99,9 @@ class CurveEditor(OpenGLWidget):
         pos = (2 * mouse_pos[0] / size[0] - 1, -(2 * mouse_pos[1] / size[1] - 1))
         self.line_data.add_point(pos)
         self.line_data.reorder()
+
+    def sample(self, pos):
+        return self.line_data.sample(pos)
 
 
 class Line:
