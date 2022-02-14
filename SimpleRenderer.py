@@ -109,9 +109,7 @@ class Entity:
         #
         GL.glBindVertexArray(self.vao)
 
-        stride = 0
-        for elem_number in buffer_format:
-            stride += self.byte_size*elem_number
+        stride = sum(buffer_format)*self.byte_size
 
         i=0
         offset = 0
