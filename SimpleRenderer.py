@@ -41,6 +41,8 @@ class OpenGLWidget(QOpenGLWidget):
         # Set refresh rate
         self.timer.start(33)
 
+        GL.glLineWidth(3)
+
     def paintGL(self):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
