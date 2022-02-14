@@ -28,6 +28,7 @@ class CurveEditor(OpenGLWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Init line
         self.line_data = Line(color=(1.0, 0.3, 0.3))
         self.line_data.add_point((-1.0, -1.0))
         self.line_data.add_point((0.0, 0.5))
@@ -50,6 +51,7 @@ class CurveEditor(OpenGLWidget):
     def initializeGL(self):
         super().initializeGL()
 
+        # Add background lines entities
         v_data_line = self.line_data_0.get_vertex_array()
         line_0 = Entity(draw_method=GL.GL_LINES)
         line_0.set_vertices_data(v_data_line)
@@ -65,15 +67,19 @@ class CurveEditor(OpenGLWidget):
         line_2.set_vertices_data(v_data_line)
         self.add_entity(line_2, "line_2")
 
+        # Add editable line entity
         v_data_line = self.line_data.get_vertex_array()
         line = Entity(draw_method=GL.GL_LINES)
         line.set_vertices_data(v_data_line)
         self.add_entity(line, "line")
 
     def paintGL(self):
-        super().paintGL()
+        # Update editable line vertex data
         v_data_line = self.line_data.get_vertex_array()
         self.entities["line"].update_vertices_data(v_data_line)
+
+        # Inherit after to avoid small lag
+        super().paintGL()
 
     def mousePressEvent(self, event):
         mouse_pos = event.pos().toTuple()
@@ -151,7 +157,7 @@ class Line:
         out = list((-1, self.points[0].pos[1])) + [0.5] + list(self.points[0].color) + out
         return np.array(out, dtype=np.float32)
 
-    def get_close_point(self, pos, margin=0.02):
+    def get_close_point(self, pos, margin=0.025):
         closest_id = None
         closest_dist = 99999
         i=0

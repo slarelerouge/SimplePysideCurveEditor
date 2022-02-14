@@ -22,6 +22,7 @@ import ctypes
 
 
 # CLASS
+# Widget class that contains the opengl renderer
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, *args, **kwargs):
         QOpenGLWidget.__init__(self, *args, **kwargs)
@@ -50,6 +51,7 @@ class OpenGLWidget(QOpenGLWidget):
             self.entities[entity].draw()
 
 
+# ShaderProgram is a class that creates a shader program that manage how to interpret data in the buffers
 class ShaderProgram:
     def __init__(self, vs="vert.glsl", fs="frag.glsl"):
         vertex_shader_source_path = pathlib.Path("glsl/" + vs)
@@ -78,6 +80,7 @@ class ShaderProgram:
         GL.glUseProgram(self.shader_program)
 
 
+# Entity is a class to manage objects to render
 class Entity:
     def __init__(self, draw_method=GL.GL_TRIANGLES):
         self.shader_program = ShaderProgram()
