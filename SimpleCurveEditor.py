@@ -1,7 +1,7 @@
 # IMPORT
 import numpy as np
 import math
-from SmallRenderer import *
+from SimpleRenderer import *
 
 
 # FUNCTION
@@ -78,6 +78,8 @@ class CurveEditor(OpenGLWidget):
             self.line_data.points[self.selected_point].move(pos)
             self.selected_point = self.line_data.reorder(self.selected_point)
 
+        print(self.line_data.sample(0.5))
+
     def mouseReleaseEvent(self, event):
         self.selected_point = None
 
@@ -95,6 +97,18 @@ class Line:
 
     def add_point(self, pos=(0, 0)):
         self.points.append(Point(pos=pos, color=self.color))
+
+    def sample(self, pos):
+        pos = pos*2 - 1
+        if self.points[0].pos[0] >= pos:
+            return self.points[0].pos[1]*0.5 + 0.5
+        elif self.points[len(self.points)-1].pos[0] <= pos:
+            return self.points[len(self.points)-1].pos[1]*0.5 + 0.5
+        else:
+            for i in range(len(self.points)):
+                if self.points[i+1].pos[0] > pos:
+                    ratio = (pos - self.points[i].pos[0])/(self.points[i+1].pos[0] - self.points[i].pos[0])
+                    return (self.points[i].pos[1]*(1-ratio) + self.points[i+1].pos[1]*ratio)*0.5 + 0.5
 
     def reorder(self, current_point=0):
         for i in range(len(self.points)):
@@ -148,3 +162,4 @@ class Point:
 
     def move(self, pos):
         self.pos = pos
+

@@ -1,6 +1,6 @@
 # IMPORT
 from PySide2.QtWidgets import QApplication
-from SmallCurveEditor import *
+from SimpleCurveEditor import *
 
 
 # CORE

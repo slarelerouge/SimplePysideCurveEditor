@@ -87,7 +87,7 @@ class Entity:
     def set_vertices_data(self, v_data, buffer_format=[3, 3]):
         # Format pos.xyz, color.xyz
         self.vertices = v_data
-        self.length = int(len(v_data)/6)
+        self.length = int(len(v_data)/sum(buffer_format))
         self.byte_size = 4
 
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vbo)
