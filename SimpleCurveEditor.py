@@ -78,8 +78,6 @@ class CurveEditor(OpenGLWidget):
             self.line_data.points[self.selected_point].move(pos)
             self.selected_point = self.line_data.reorder(self.selected_point)
 
-        print(self.line_data.sample(0.5))
-
     def mouseReleaseEvent(self, event):
         self.selected_point = None
 
@@ -89,6 +87,7 @@ class CurveEditor(OpenGLWidget):
         pos = (2 * mouse_pos[0] / size[0] - 1, -(2 * mouse_pos[1] / size[1] - 1))
         self.line_data.add_point(pos)
         self.line_data.reorder()
+
 
 class Line:
     def __init__(self, color=(1.0, 1.0, 1.0)):
@@ -162,4 +161,3 @@ class Point:
 
     def move(self, pos):
         self.pos = pos
-

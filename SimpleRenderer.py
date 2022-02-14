@@ -25,7 +25,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def initializeGL(self):
         # Clear color
-        GL.glClearColor(0.2, 0.3, 0.3, 1.0)
+        GL.glClearColor(0.3, 0.3, 0.3, 1.0)
         # Set refresh rate
         self.timer.start(33)
 
@@ -76,7 +76,6 @@ class Entity:
 
     def update_vertices_data(self, v_data):
         # Format pos.xyz, color.xyz
-        self.vertices = v_data
         self.length = int(len(v_data) / 6)
 
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vbo)
@@ -84,11 +83,11 @@ class Entity:
 
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
 
+    # Buffer format means elements per vao; for instance, data like pos.xyz, color.xyz needs buffer_format = [3, 3],
+    # while pos.xyz, normal.xyz, color.xyz, uv.xy would need [3, 3, 3, 2]
     def set_vertices_data(self, v_data, buffer_format=[3, 3]):
-        # Format pos.xyz, color.xyz
-        self.vertices = v_data
         self.length = int(len(v_data)/sum(buffer_format))
-        self.byte_size = 4
+        self.byte_size = 4  # 4B = 32b
 
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, v_data.nbytes, v_data, GL.GL_STATIC_DRAW)
@@ -109,6 +108,7 @@ class Entity:
             i+=1
 
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+        GL.glBindVertexArray(0)
 
     def draw(self):
         self.shader_program.use()
