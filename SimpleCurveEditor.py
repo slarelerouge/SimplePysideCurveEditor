@@ -14,7 +14,7 @@ If not, see <https://www.gnu.org/licenses/>. 3
 import numpy as np
 import math
 from SimpleRenderer import *
-
+from PySide2.QtWidgets import QApplication
 
 # FUNCTION
 def distance_sq(pos_a, pos_b):
@@ -28,12 +28,14 @@ class CurveEditor(OpenGLWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Init line
+        # Init lines
+        # Editable line
         self.line_data = Line(color=(1.0, 0.3, 0.3))
         self.line_data.add_point((-1.0, -1.0))
         self.line_data.add_point((0.0, 0.5))
         self.line_data.add_point((1.0, 1.0))
 
+        # Background lines
         self.line_data_0 = Line(color=(0.5, 0.5, 0.5))
         self.line_data_0.add_point((-1.0, 0.5))
         self.line_data_0.add_point((1.0, 0.5))
@@ -84,14 +86,24 @@ class CurveEditor(OpenGLWidget):
     def mousePressEvent(self, event):
         mouse_pos = event.pos().toTuple()
         size = self.size().toTuple()
-        pos = (2*mouse_pos[0]/size[0] - 1, -(2*mouse_pos[1]/size[1] - 1))
-        self.selected_point = self.line_data.get_close_point(pos)
+        # Normalize pos
+        pos = (2 * mouse_pos[0] / size[0] - 1, -(2 * mouse_pos[1] / size[1] - 1))
+        # Delete point if shift is pressed
+        modifiers = QApplication.keyboardModifiers()
+        if modifiers == Qt.ShiftModifier:
+            closest = self.line_data.get_close_point(pos, margin=0.001)
+            if closest != None:
+                if len(self.line_data.points) > 2:
+                    self.line_data.delete_point(closest)
+        # Else detect point to select to move
+        else:
+            self.selected_point = self.line_data.get_close_point(pos)
 
     def mouseMoveEvent(self, event):
         mouse_pos = event.pos().toTuple()
         size = self.size().toTuple()
+        # Normalize pos and clamp position
         pos = (max(min(2 * mouse_pos[0] / size[0] - 1, 1), -1), max(min(-(2 * mouse_pos[1] / size[1] - 1), 1), -1))
-
         if self.selected_point != None:
             self.line_data.points[self.selected_point].move(pos)
             self.selected_point = self.line_data.reorder(self.selected_point)
@@ -131,7 +143,7 @@ class Line:
                     return (self.points[i].pos[1]*(1-ratio) + self.points[i+1].pos[1]*ratio)*0.5 + 0.5
 
     def reorder(self, current_point=0):
-        for i in range(len(self.points)):
+        for i in reversed(range(len(self.points))):
             if i != len(self.points)-1:
                 if self.points[i+1].pos[0] < self.points[i].pos[0]:
                     item = self.points.pop(i + 1)
@@ -174,6 +186,9 @@ class Line:
             i += 1
         return closest_id
 
+    def delete_point(self, point_id):
+        self.points.pop(point_id)
+
 
 class Point:
     def __init__(self, pos=(0, 0), color=(1, 0.3, 0.3)):
@@ -182,3 +197,4 @@ class Point:
 
     def move(self, pos):
         self.pos = pos
+

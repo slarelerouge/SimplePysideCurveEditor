@@ -53,6 +53,7 @@ class OpenGLWidget(QOpenGLWidget):
 
 # ShaderProgram is a class that creates a shader program that manage how to interpret data in the buffers
 class ShaderProgram:
+
     def __init__(self, vs="vert.glsl", fs="frag.glsl"):
         vertex_shader_source_path = pathlib.Path("glsl/" + vs)
         fragment_shader_source_path = pathlib.Path("glsl/" + fs)
